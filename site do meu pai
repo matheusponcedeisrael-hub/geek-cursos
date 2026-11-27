@@ -1,0 +1,1500 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Israel Gás | Gerenciamento</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #eef2f5;
+      color: #263238;
+    }
+
+    header {
+      background: #123b63;
+      color: white;
+      text-align: center;
+      padding: 25px;
+    }
+
+    header h1 { margin: 0; font-size: 32px; }
+    header p { margin-bottom: 0; }
+
+    nav {
+      background: #092b49;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 0 12px;
+      font-weight: bold;
+      display: inline-block;
+      padding: 5px;
+    }
+
+    main {
+      max-width: 1150px;
+      margin: 25px auto;
+      padding: 15px;
+    }
+
+    section, aside {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px #00000012;
+    }
+
+    h2 {
+      color: #123b63;
+      border-bottom: 2px solid #e1e7ed;
+      padding-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+
+    button {
+      background: #123b63;
+      color: white;
+      border: 0;
+      padding: 11px 16px;
+      margin-top: 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    button:hover { background: #1d5b91; }
+    .botao-compra { background: #167344; }
+    .botao-perigo { background: #a83232; }
+
+    .painel {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .card {
+      background: #e7f0f8;
+      padding: 18px;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .card h3 { margin-top: 0; font-size: 16px; }
+
+    .card p {
+      font-size: 23px;
+      font-weight: bold;
+      margin-bottom: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .tabela-container { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      min-width: 450px;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th { background: #123b63; color: white; }
+    tr:hover { background: #f2f6fa; }
+    .fiado { color: #a86600; font-weight: bold; }
+    .pago { color: #167344; font-weight: bold; }
+
+    .form-gastos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      align-items: end;
+    }
+
+    .form-gastos button { width: 100%; }
+
+    .resumo-gastos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      text-align: center;
+    }
+
+    .resumo-gastos div {
+      background: #eeeeee;
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .resumo-gastos p {
+      font-weight: bold;
+      color: #176b35;
+    }
+
+    .calendario-topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .calendario-topo button { margin: 0; }
+
+    .calendario-grade {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .dia-semana {
+      text-align: center;
+      font-weight: bold;
+      color: #52616d;
+      padding: 8px 0;
+    }
+
+    .dia-calendario {
+      min-height: 92px;
+      border: 1px solid #d9e1e8;
+      border-radius: 7px;
+      background: #fff;
+      padding: 7px;
+      cursor: pointer;
+      text-align: left;
+      color: #263238;
+      margin: 0;
+    }
+
+    .dia-calendario:hover { background: #edf5fc; }
+    .dia-calendario.fora-mes { opacity: .42; }
+
+    .dia-calendario.selecionado {
+      outline: 3px solid #2877b8;
+      background: #edf5fc;
+    }
+
+    .dia-calendario.hoje { border-color: #176b35; }
+
+    .numero-dia {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .marcador {
+      display: block;
+      font-size: 11px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+
+    .marcador.venda { color: #167344; }
+    .marcador.compra { color: #245f9b; }
+    .marcador.fiado { color: #a86600; }
+    .marcador.moto { color: #8b4a9c; }
+
+    .detalhe-dia {
+      background: #f5f8fb;
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 16px;
+    }
+
+    .detalhe-dia ul { padding-left: 20px; }
+
+    .legenda {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 12px;
+      margin-top: 10px;
+      color: #52616d;
+    }
+
+    .legenda span::before { content: "● "; }
+    .legenda .l-venda::before { color: #167344; }
+    .legenda .l-compra::before { color: #245f9b; }
+    .legenda .l-fiado::before { color: #a86600; }
+    .legenda .l-moto::before { color: #8b4a9c; }
+
+    footer {
+      background: #092b49;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #telaLogin {
+      position: fixed;
+      inset: 0;
+      background: #202020;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .caixa-login {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      width: min(340px, 90vw);
+      text-align: center;
+    }
+
+    .caixa-login input { width: 100%; }
+
+    .caixa-login button {
+      width: 100%;
+      background: #176b35;
+    }
+
+    #mensagemLogin { color: red; }
+
+    @media (max-width: 700px) {
+      .painel, .resumo-gastos { grid-template-columns: 1fr; }
+      .form-gastos { grid-template-columns: 1fr; }
+      header h1 { font-size: 25px; }
+      .dia-calendario { min-height: 76px; padding: 4px; }
+      .marcador { font-size: 9px; }
+      main { padding: 9px; }
+      section { padding: 14px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="telaLogin">
+    <div class="caixa-login">
+      <h1>ISRAEL GÁS</h1>
+      <h3>Acesso ao sistema</h3>
+
+      <input
+        type="password"
+        id="senha"
+        placeholder="Digite sua senha"
+        autocomplete="current-password"
+      >
+
+      <button onclick="verificarSenha()">Entrar</button>
+
+      <p id="mensagemLogin"></p>
+      <p id="tentativas">Tentativas restantes: 3</p>
+    </div>
+  </div>
+
+  <header>
+    <h1>ISRAEL GÁS</h1>
+    <p>Sistema de Controle de Estoque, Vendas e Despesas</p>
+  </header>
+
+  <nav>
+    <a href="#inicio">Início</a>
+    <a href="#calendario">Calendário</a>
+    <a href="#estoque">Estoque</a>
+    <a href="#movimentacao">Movimentações</a>
+    <a href="#relatorios">Relatórios</a>
+    <a href="#gastosMoto">Gastos da moto</a>
+  </nav>
+
+  <main>
+
+    <section id="inicio">
+      <h2>Painel de Controle</h2>
+
+      <div class="painel">
+        <div class="card">
+          <h3>Estoque Total</h3>
+          <p id="estoqueTotal">0</p>
+        </div>
+
+        <div class="card">
+          <h3>Total de Vendas</h3>
+          <p id="vendasTotal">R$ 0,00</p>
+        </div>
+
+        <div class="card">
+          <h3>Vendas Fiadas</h3>
+          <p id="fiadoTotal">R$ 0,00</p>
+        </div>
+
+        <div class="card">
+          <h3>Gastos da Moto</h3>
+          <p id="gastosMotoPainel">R$ 0,00</p>
+        </div>
+
+        <div class="card">
+          <h3>Compras registradas</h3>
+          <p id="comprasTotal">R$ 0,00</p>
+        </div>
+
+        <div class="card">
+          <h3>Saldo de vendas - compras - moto</h3>
+          <p id="saldoOperacional">R$ 0,00</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="calendario">
+      <h2>Calendário de movimentações</h2>
+
+      <p>
+        Selecione um dia para consultar vendas, compras,
+        vendas fiadas e despesas da moto registradas naquela data.
+      </p>
+
+      <div class="calendario-topo">
+        <button type="button" onclick="mudarMes(-1)">
+          ‹ Mês anterior
+        </button>
+
+        <h3 id="mesAnoCalendario" aria-live="polite"></h3>
+
+        <button type="button" onclick="mudarMes(1)">
+          Próximo mês ›
+        </button>
+      </div>
+
+      <div class="calendario-grade" id="calendarioGrade"></div>
+
+      <div class="legenda">
+        <span class="l-venda">Vendas</span>
+        <span class="l-compra">Compras</span>
+        <span class="l-fiado">Fiado</span>
+        <span class="l-moto">Gastos da moto</span>
+      </div>
+
+      <div class="detalhe-dia" id="detalheDia" aria-live="polite"></div>
+    </section>
+
+    <section id="estoque">
+      <h2>Controle de Estoque</h2>
+
+      <div class="tabela-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Produto</th>
+              <th>Quantidade</th>
+            </tr>
+          </thead>
+
+          <tbody id="tabelaEstoque"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="movimentacao">
+      <h2>Registrar Movimentação</h2>
+
+      <label for="tipo">Tipo de movimentação:</label>
+      <select id="tipo">
+        <option value="venda">Venda</option>
+        <option value="compra">Compra</option>
+      </select>
+
+      <label for="produto">Tipo de produto:</label>
+      <select id="produto">
+        <option value="P13">P13</option>
+        <option value="P20">P20</option>
+        <option value="P45">P45</option>
+        <option value="Agua mineral 20LT">Água mineral 20LT</option>
+        <option value="Agua">Água mineral 10LT</option>
+        <option value="Fardo 500Ml c/gás">Fardo 500ML com gás</option>
+        <option value="fardo 500Ml s/gás">Fardo 500ML sem gás</option>
+      </select>
+
+      <label for="quantidade">Quantidade:</label>
+      <input
+        type="number"
+        id="quantidade"
+        min="1"
+        step="1"
+        placeholder="Digite a quantidade"
+      >
+
+      <label for="preco">Valor unitário (R$):</label>
+      <input
+        type="number"
+        id="preco"
+        min="0.01"
+        step="0.01"
+        placeholder="Digite o valor"
+      >
+
+      <label for="fiado">Forma de pagamento:</label>
+      <select id="fiado">
+        <option value="nao">Pago</option>
+        <option value="sim">Fiado</option>
+      </select>
+
+      <label for="dataMovimentacao">Data da movimentação:</label>
+      <input type="date" id="dataMovimentacao">
+
+      <button onclick="registrarMovimentacao()">
+        Registrar movimentação
+      </button>
+    </section>
+
+    <section id="relatorios">
+      <h2>Relatórios de Vendas</h2>
+
+      <div class="painel">
+        <div class="card">
+          <h3>Vendas de Hoje</h3>
+          <p id="vendaDia">R$ 0,00</p>
+          <small id="qtdDia">0 unidades</small>
+        </div>
+
+        <div class="card">
+          <h3>Vendas do Mês</h3>
+          <p id="vendaMes">R$ 0,00</p>
+          <small id="qtdMes">0 unidades</small>
+        </div>
+
+        <div class="card">
+          <h3>Vendas do Ano</h3>
+          <p id="vendaAno">R$ 0,00</p>
+          <small id="qtdAno">0 unidades</small>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Histórico de Movimentações</h2>
+
+      <div class="tabela-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Operação</th>
+              <th>Produto</th>
+              <th>Quantidade</th>
+              <th>Valor</th>
+              <th>Pagamento</th>
+            </tr>
+          </thead>
+
+          <tbody id="historico"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="gastosMoto">
+      <h2>Gastos da Moto</h2>
+
+      <div class="form-gastos">
+        <div>
+          <label for="categoriaGasto">Categoria:</label>
+          <select id="categoriaGasto">
+            <option value="Combustível">Combustível</option>
+            <option value="Outro 1">Outro 1</option>
+            <option value="Outro 2">Outro 2</option>
+            <option value="Outro 3">Outro 3</option>
+            <option value="Outro 4">Outro 4</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="dataGasto">Data:</label>
+          <input type="date" id="dataGasto">
+        </div>
+
+        <div>
+          <label for="valorGasto">Valor (R$):</label>
+          <input
+            type="number"
+            id="valorGasto"
+            placeholder="0,00"
+            min="0.01"
+            step="0.01"
+          >
+        </div>
+      </div>
+
+      <button onclick="registrarGasto()">Registrar gasto</button>
+
+      <h3>Resumo dos gastos</h3>
+
+      <div class="resumo-gastos">
+        <div>
+          <h4>Hoje</h4>
+          <p id="gastoDiario">R$ 0,00</p>
+        </div>
+
+        <div>
+          <h4>Este mês</h4>
+          <p id="gastoMensal">R$ 0,00</p>
+        </div>
+
+        <div>
+          <h4>Total acumulado</h4>
+          <p id="gastoTotal">R$ 0,00</p>
+        </div>
+      </div>
+
+      <h3>Histórico de despesas da moto</h3>
+
+      <div class="tabela-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Categoria</th>
+              <th>Valor</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+
+          <tbody id="historicoGastos"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Manutenção do histórico</h2>
+
+      <p>
+        Esta ação apaga as compras e vendas e zera o estoque.
+        Ela não apaga os gastos da moto.
+      </p>
+
+      <button class="botao-perigo" onclick="limparHistorico()">
+        Apagar compras/vendas e zerar estoque
+      </button>
+    </section>
+
+    <aside>
+      <h3>Israel Gás</h3>
+      <p>
+        Sistema interno para gerenciamento de estoque,
+        compras, vendas e despesas de entrega.
+      </p>
+    </aside>
+
+  </main>
+
+  <footer>
+    <p>Israel Gás - 2026</p>
+    <p>Sistema de gerenciamento comercial</p>
+  </footer>
+
+  <script>
+
+
+
+    // ==========================================
+    // CONFIGURAÇÕES DE ACESSO
+    // ==========================================
+
+    const senhaCorreta = "IsraelGAS2026";
+    let tentativas = 3;
+    let bloqueado = false;
+
+    function verificarSenha() {
+      if (bloqueado) return;
+
+      const digitada = document.getElementById("senha").value;
+
+      if (digitada === senhaCorreta) {
+        document.getElementById("mensagemLogin").textContent =
+          "Acesso autorizado!";
+
+        document.getElementById("telaLogin").style.display = "none";
+      } else {
+        tentativas--;
+
+        document.getElementById("mensagemLogin").textContent =
+          "Senha incorreta!";
+
+        document.getElementById("tentativas").textContent =
+          "Tentativas restantes: " + tentativas;
+
+        document.getElementById("senha").value = "";
+
+        if (tentativas <= 0) {
+          bloqueado = true;
+
+          document.getElementById("mensagemLogin").textContent =
+            "Acesso bloqueado! Recarregue a página para reiniciar o protótipo.";
+
+          document.getElementById("senha").disabled = true;
+        }
+      }
+    }
+
+    // ==========================================
+    // ARMAZENAMENTO
+    // ==========================================
+
+    const CHAVE_GASTOS = "israelGasGastosMoto";
+    const CHAVE_ESTOQUE = "israelGasEstoque";
+    const CHAVE_MOVIMENTACOES = "israelGasMovimentacoes";
+
+    let estoque = {
+      P13: 0,
+      P20: 0,
+      P45: 0,
+      "Agua mineral 20LT": 0,
+      "Agua": 0,
+      "Fardo 500Ml c/gás": 0,
+      "fardo 500Ml s/gás": 0
+    };
+
+    let movimentacoes = [];
+    let gastosMoto = [];
+
+    function lerJSON(chave, padrao) {
+      try {
+        const salvo = localStorage.getItem(chave);
+        return salvo ? JSON.parse(salvo) : padrao;
+      } catch (erro) {
+        console.error("Não foi possível ler", chave, erro);
+        return padrao;
+      }
+    }
+
+    function dataLocal() {
+      const agora = new Date();
+
+      return `${agora.getFullYear()}-${String(
+        agora.getMonth() + 1
+      ).padStart(2, "0")}-${String(
+        agora.getDate()
+      ).padStart(2, "0")}`;
+    }
+
+    function dinheiro(valor) {
+      return Number(valor || 0).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      });
+    }
+
+    function formatarData(data) {
+      return data
+        ? data.split("-").reverse().join("/")
+        : "Data não informada";
+    }
+
+    function salvarDados() {
+      localStorage.setItem(
+        CHAVE_ESTOQUE,
+        JSON.stringify(estoque)
+      );
+
+      localStorage.setItem(
+        CHAVE_MOVIMENTACOES,
+        JSON.stringify(movimentacoes)
+      );
+    }
+
+    function salvarGastosMoto() {
+      localStorage.setItem(
+        CHAVE_GASTOS,
+        JSON.stringify(gastosMoto)
+      );
+    }
+
+    function carregarDados() {
+      estoque = {
+        ...estoque,
+        ...lerJSON(CHAVE_ESTOQUE, {})
+      };
+
+      movimentacoes = lerJSON(
+        CHAVE_MOVIMENTACOES, []
+      );
+
+      gastosMoto = lerJSON(
+        CHAVE_GASTOS, []
+      );
+    }
+
+    // ==========================================
+    // REGISTRAR COMPRAS E VENDAS
+    // ==========================================
+
+    function registrarMovimentacao() {
+      const tipo = document.getElementById("tipo").value;
+
+      const produto = document.getElementById("produto").value;
+
+      const quantidade = Number(
+        document.getElementById("quantidade").value
+      );
+
+      const preco = Number(
+        document.getElementById("preco").value
+      );
+
+      const pagamentoSelecionado =
+        document.getElementById("fiado").value;
+
+      const data =
+        document.getElementById("dataMovimentacao").value;
+
+      if (
+        !data ||
+        !Number.isSafeInteger(quantidade) ||
+        quantidade <= 0 ||
+        !Number.isFinite(preco) ||
+        preco <= 0
+      ) {
+        alert(
+          "Informe data, quantidade inteira positiva e valor unitário válido."
+        );
+        return;
+      }
+
+      if (
+        tipo === "venda" &&
+        quantidade > (Number(estoque[produto]) || 0)
+      ) {
+        alert("Estoque insuficiente!");
+        return;
+      }
+
+      if (tipo === "compra") {
+        estoque[produto] =
+          (Number(estoque[produto]) || 0) + quantidade;
+      } else {
+        estoque[produto] -= quantidade;
+      }
+
+      movimentacoes.push({
+        id: Date.now(),
+        data,
+        tipo,
+        produto,
+        quantidade,
+        valor: quantidade * preco,
+
+        pagamento: tipo === "compra"
+          ? "Compra"
+          : (
+              pagamentoSelecionado === "sim"
+                ? "Fiado"
+                : "Pago"
+            )
+      });
+
+      salvarDados();
+      atualizarSistema();
+      atualizarCalendario();
+
+      document.getElementById("quantidade").value = "";
+      document.getElementById("preco").value = "";
+      document.getElementById("fiado").value = "nao";
+
+      alert("Movimentação registrada com sucesso!");
+    }
+
+    // ==========================================
+    // GASTOS DA MOTO
+    // ==========================================
+
+    function registrarGasto() {
+      const categoria =
+        document.getElementById("categoriaGasto").value;
+
+      const data =
+        document.getElementById("dataGasto").value;
+
+      const valor = Number(
+        document.getElementById("valorGasto").value
+      );
+
+      if (!data || !Number.isFinite(valor) || valor <= 0) {
+        alert("Informe uma data e um valor válido.");
+        return;
+      }
+
+      gastosMoto.push({
+        id: Date.now(),
+        categoria,
+        data,
+        valor
+      });
+
+      salvarGastosMoto();
+
+      document.getElementById("valorGasto").value = "";
+
+      atualizarGastos();
+      atualizarCalendario();
+      atualizarPainel();
+    }
+
+    function excluirGasto(id) {
+      if (!confirm("Deseja excluir este gasto da moto?")) {
+        return;
+      }
+
+      gastosMoto = gastosMoto.filter(
+        gasto => gasto.id !== id
+      );
+
+      salvarGastosMoto();
+
+      atualizarGastos();
+      atualizarCalendario();
+      atualizarPainel();
+    }
+
+    function atualizarGastos() {
+      const hoje = dataLocal();
+      const mesAtual = hoje.slice(0, 7);
+
+      let diario = 0;
+      let mensal = 0;
+      let total = 0;
+
+      const tabela =
+        document.getElementById("historicoGastos");
+
+      tabela.innerHTML = "";
+
+      gastosMoto
+        .slice()
+        .sort((a, b) => b.data.localeCompare(a.data))
+        .forEach(gasto => {
+
+          const valor = Number(gasto.valor) || 0;
+
+          total += valor;
+
+          if (gasto.data === hoje) {
+            diario += valor;
+          }
+
+          if (
+            gasto.data &&
+            gasto.data.startsWith(mesAtual)
+          ) {
+            mensal += valor;
+          }
+
+          const linha = document.createElement("tr");
+
+          [
+            formatarData(gasto.data),
+            gasto.categoria,
+            dinheiro(valor)
+          ].forEach(texto => {
+            const celula = document.createElement("td");
+            celula.textContent = texto;
+            linha.appendChild(celula);
+          });
+
+          const acao = document.createElement("td");
+
+          const botao = document.createElement("button");
+
+          botao.textContent = "Excluir";
+          botao.className = "botao-perigo";
+
+          botao.onclick = () => excluirGasto(gasto.id);
+
+          acao.appendChild(botao);
+          linha.appendChild(acao);
+
+          tabela.appendChild(linha);
+        });
+
+      document.getElementById("gastoDiario").textContent =
+        dinheiro(diario);
+
+      document.getElementById("gastoMensal").textContent =
+        dinheiro(mensal);
+
+      document.getElementById("gastoTotal").textContent =
+        dinheiro(total);
+    }
+
+    // ==========================================
+    // CONTROLE DE ESTOQUE
+    // ==========================================
+
+    function atualizarEstoque() {
+      const tabela =
+        document.getElementById("tabelaEstoque");
+
+      tabela.innerHTML = "";
+
+      let total = 0;
+
+      Object.entries(estoque).forEach(
+        ([produto, quantidade]) => {
+
+          const qtd = Number(quantidade) || 0;
+
+          total += qtd;
+
+          const linha = document.createElement("tr");
+
+          const nome = document.createElement("td");
+          nome.textContent = produto;
+
+          const valor = document.createElement("td");
+          valor.textContent = `${qtd} unidades`;
+
+          linha.append(nome, valor);
+
+          tabela.appendChild(linha);
+        }
+      );
+
+      document.getElementById("estoqueTotal").textContent =
+        total;
+    }
+
+    // ==========================================
+    // HISTÓRICO DE COMPRAS E VENDAS
+    // ==========================================
+
+    function atualizarHistorico() {
+      const tabela =
+        document.getElementById("historico");
+
+      tabela.innerHTML = "";
+
+      movimentacoes
+        .slice()
+        .reverse()
+        .forEach(item => {
+
+          const linha = document.createElement("tr");
+
+          const dados = [
+            formatarData(item.data),
+            item.tipo === "venda" ? "Venda" : "Compra",
+            item.produto,
+            item.quantidade,
+            dinheiro(item.valor),
+            item.pagamento
+          ];
+
+          dados.forEach((texto, indice) => {
+
+            const celula = document.createElement("td");
+
+            celula.textContent = texto;
+
+            if (indice === 5) {
+              celula.className =
+                item.pagamento === "Fiado"
+                  ? "fiado"
+                  : "pago";
+            }
+
+            linha.appendChild(celula);
+          });
+
+          tabela.appendChild(linha);
+        });
+    }
+
+    // ==========================================
+    // RELATÓRIOS
+    // ==========================================
+
+    function atualizarRelatorios() {
+      const hoje = dataLocal();
+
+      const mesAtual = hoje.slice(0, 7);
+      const anoAtual = hoje.slice(0, 4);
+
+      let totalVendas = 0;
+      let totalFiado = 0;
+      let totalCompras = 0;
+
+      const dia = { valor: 0, quantidade: 0 };
+      const mes = { valor: 0, quantidade: 0 };
+      const ano = { valor: 0, quantidade: 0 };
+
+      movimentacoes.forEach(item => {
+
+        const valor = Number(item.valor) || 0;
+
+        if (item.tipo === "compra") {
+          totalCompras += valor;
+          return;
+        }
+
+        if (item.tipo !== "venda") return;
+
+        totalVendas += valor;
+
+        if (item.pagamento === "Fiado") {
+          totalFiado += valor;
+        }
+
+        if (item.data === hoje) {
+          dia.valor += valor;
+          dia.quantidade += Number(item.quantidade) || 0;
+        }
+
+        if (item.data.slice(0, 7) === mesAtual) {
+          mes.valor += valor;
+          mes.quantidade += Number(item.quantidade) || 0;
+        }
+
+        if (item.data.slice(0, 4) === anoAtual) {
+          ano.valor += valor;
+          ano.quantidade += Number(item.quantidade) || 0;
+        }
+      });
+
+      document.getElementById("vendasTotal").textContent =
+        dinheiro(totalVendas);
+
+      document.getElementById("fiadoTotal").textContent =
+        dinheiro(totalFiado);
+
+      document.getElementById("comprasTotal").textContent =
+        dinheiro(totalCompras);
+
+      document.getElementById("vendaDia").textContent =
+        dinheiro(dia.valor);
+
+      document.getElementById("qtdDia").textContent =
+        dia.quantidade + " unidades";
+
+      document.getElementById("vendaMes").textContent =
+        dinheiro(mes.valor);
+
+      document.getElementById("qtdMes").textContent =
+        mes.quantidade + " unidades";
+
+      document.getElementById("vendaAno").textContent =
+        dinheiro(ano.valor);
+
+      document.getElementById("qtdAno").textContent =
+        ano.quantidade + " unidades";
+    }
+
+    // ==========================================
+    // PAINEL FINANCEIRO
+    // ==========================================
+
+    function atualizarPainel() {
+
+      const totalMoto = gastosMoto.reduce(
+        (soma, item) =>
+          soma + (Number(item.valor) || 0),
+        0
+      );
+
+      const totalVendas = movimentacoes
+        .filter(i => i.tipo === "venda")
+        .reduce(
+          (soma, item) =>
+            soma + (Number(item.valor) || 0),
+          0
+        );
+
+      const totalCompras = movimentacoes
+        .filter(i => i.tipo === "compra")
+        .reduce(
+          (soma, item) =>
+            soma + (Number(item.valor) || 0),
+          0
+        );
+
+      document.getElementById("gastosMotoPainel").textContent =
+        dinheiro(totalMoto);
+
+      document.getElementById("saldoOperacional").textContent =
+        dinheiro(totalVendas - totalCompras - totalMoto);
+    }
+
+
+
+    // ==========================================
+    // CALENDÁRIO DE MOVIMENTAÇÕES
+    // ==========================================
+
+    let mesExibido = new Date();
+    let dataSelecionada = dataLocal();
+
+    const nomesMeses = [
+      "janeiro",
+      "fevereiro",
+      "março",
+      "abril",
+      "maio",
+      "junho",
+      "julho",
+      "agosto",
+      "setembro",
+      "outubro",
+      "novembro",
+      "dezembro"
+    ];
+
+    function mudarMes(direcao) {
+      mesExibido = new Date(
+        mesExibido.getFullYear(),
+        mesExibido.getMonth() + direcao,
+        1
+      );
+
+      atualizarCalendario();
+    }
+
+    // ==========================================
+    // CONSULTAR MOVIMENTAÇÕES DE UM DIA
+    // ==========================================
+
+    function obterResumoData(data) {
+      const movs = movimentacoes.filter(
+        item => item.data === data
+      );
+
+      const gastos = gastosMoto.filter(
+        item => item.data === data
+      );
+
+      return {
+        vendas: movs
+          .filter(item => item.tipo === "venda")
+          .reduce(
+            (soma, item) => soma + (Number(item.valor) || 0),
+            0
+          ),
+
+        compras: movs
+          .filter(item => item.tipo === "compra")
+          .reduce(
+            (soma, item) => soma + (Number(item.valor) || 0),
+            0
+          ),
+
+        fiado: movs
+          .filter(
+            item =>
+              item.tipo === "venda" &&
+              item.pagamento === "Fiado"
+          )
+          .reduce(
+            (soma, item) => soma + (Number(item.valor) || 0),
+            0
+          ),
+
+        moto: gastos.reduce(
+          (soma, item) => soma + (Number(item.valor) || 0),
+          0
+        ),
+
+        movs,
+        gastos
+      };
+    }
+
+    // ==========================================
+    // DESENHAR CALENDÁRIO
+    // ==========================================
+
+    function atualizarCalendario() {
+      const ano = mesExibido.getFullYear();
+      const mes = mesExibido.getMonth();
+
+      document.getElementById("mesAnoCalendario").textContent =
+        `${nomesMeses[mes][0].toUpperCase()}${nomesMeses[mes].slice(1)} de ${ano}`;
+
+      const grade =
+        document.getElementById("calendarioGrade");
+
+      grade.innerHTML = "";
+
+      [
+        "Dom",
+        "Seg",
+        "Ter",
+        "Qua",
+        "Qui",
+        "Sex",
+        "Sáb"
+      ].forEach(nome => {
+
+        const cab = document.createElement("div");
+
+        cab.className = "dia-semana";
+        cab.textContent = nome;
+
+        grade.appendChild(cab);
+      });
+
+      const primeiroDia = new Date(
+        ano,
+        mes,
+        1
+      ).getDay();
+
+      const diasNoMes = new Date(
+        ano,
+        mes + 1,
+        0
+      ).getDate();
+
+      const totalCelulas =
+        Math.ceil((primeiroDia + diasNoMes) / 7) * 7;
+
+      for (
+        let indice = 0;
+        indice < totalCelulas;
+        indice++
+      ) {
+
+        const numero = indice - primeiroDia + 1;
+
+        const dataCelula = new Date(
+          ano,
+          mes,
+          numero
+        );
+
+        const data =
+          `${dataCelula.getFullYear()}-${String(
+            dataCelula.getMonth() + 1
+          ).padStart(2, "0")}-${String(
+            dataCelula.getDate()
+          ).padStart(2, "0")}`;
+
+        const resumo = obterResumoData(data);
+
+        const botao = document.createElement("button");
+
+        botao.type = "button";
+        botao.className = "dia-calendario";
+
+        if (dataCelula.getMonth() !== mes) {
+          botao.classList.add("fora-mes");
+        }
+
+        if (data === dataLocal()) {
+          botao.classList.add("hoje");
+        }
+
+        if (data === dataSelecionada) {
+          botao.classList.add("selecionado");
+        }
+
+        const numeroEl = document.createElement("span");
+
+        numeroEl.className = "numero-dia";
+        numeroEl.textContent = dataCelula.getDate();
+
+        botao.appendChild(numeroEl);
+
+        function marcador(classe, texto) {
+          const el = document.createElement("span");
+
+          el.className = `marcador ${classe}`;
+          el.textContent = texto;
+
+          botao.appendChild(el);
+        }
+
+        if (resumo.vendas) {
+          marcador(
+            "venda",
+            `Venda ${dinheiro(resumo.vendas)}`
+          );
+        }
+
+        if (resumo.compras) {
+          marcador(
+            "compra",
+            `Compra ${dinheiro(resumo.compras)}`
+          );
+        }
+
+        if (resumo.fiado) {
+          marcador(
+            "fiado",
+            `Fiado ${dinheiro(resumo.fiado)}`
+          );
+        }
+
+        if (resumo.moto) {
+          marcador(
+            "moto",
+            `Moto ${dinheiro(resumo.moto)}`
+          );
+        }
+
+        botao.setAttribute(
+          "aria-label",
+          `${formatarData(data)}. Vendas ${dinheiro(resumo.vendas)}, compras ${dinheiro(resumo.compras)}, fiado ${dinheiro(resumo.fiado)}, moto ${dinheiro(resumo.moto)}.`
+        );
+
+        botao.onclick = () => {
+          dataSelecionada = data;
+          atualizarCalendario();
+        };
+
+        grade.appendChild(botao);
+      }
+
+      atualizarDetalheDia();
+    }
+
+    // ==========================================
+    // DETALHES DE CADA DIA
+    // ==========================================
+
+    function atualizarDetalheDia() {
+      const resumo = obterResumoData(dataSelecionada);
+
+      const area =
+        document.getElementById("detalheDia");
+
+      area.innerHTML = "";
+
+      const titulo = document.createElement("h3");
+
+      titulo.textContent =
+        `Movimentações de ${formatarData(dataSelecionada)}`;
+
+      area.appendChild(titulo);
+
+      const resumoTexto = document.createElement("p");
+
+      resumoTexto.textContent =
+        `Vendas: ${dinheiro(resumo.vendas)} | Compras: ${dinheiro(resumo.compras)} | Fiado: ${dinheiro(resumo.fiado)} | Gastos da moto: ${dinheiro(resumo.moto)}`;
+
+      area.appendChild(resumoTexto);
+
+      const lista = document.createElement("ul");
+
+      resumo.movs.forEach(item => {
+
+        const li = document.createElement("li");
+
+        li.textContent =
+          `${item.tipo === "venda" ? "Venda" : "Compra"}: ${item.quantidade} x ${item.produto}, ${dinheiro(item.valor)}${item.pagamento === "Fiado" ? " (FIADO)" : ""}`;
+
+        lista.appendChild(li);
+      });
+
+      resumo.gastos.forEach(item => {
+
+        const li = document.createElement("li");
+
+        li.textContent =
+          `Gasto da moto (${item.categoria}): ${dinheiro(item.valor)}`;
+
+        lista.appendChild(li);
+      });
+
+      if (
+        !resumo.movs.length &&
+        !resumo.gastos.length
+      ) {
+
+        const vazio = document.createElement("li");
+
+        vazio.textContent =
+          "Nenhuma movimentação registrada neste dia.";
+
+        lista.appendChild(vazio);
+      }
+
+      area.appendChild(lista);
+    }
+
+    // ==========================================
+    // LIMPAR HISTÓRICO
+    // ==========================================
+
+    function limparHistorico() {
+
+      if (
+        !confirm(
+          "Confirma apagar todas as compras e vendas e zerar o estoque? Os gastos da moto serão preservados."
+        )
+      ) {
+        return;
+      }
+
+      movimentacoes = [];
+
+      Object.keys(estoque).forEach(
+        produto => estoque[produto] = 0
+      );
+
+      salvarDados();
+
+      atualizarSistema();
+      atualizarCalendario();
+
+      alert(
+        "Compras e vendas apagadas e estoque zerado. Os gastos da moto foram preservados."
+      );
+    }
+
+    // ==========================================
+    // ATUALIZAÇÃO GERAL
+    // ==========================================
+
+    function atualizarSistema() {
+      atualizarEstoque();
+      atualizarHistorico();
+      atualizarRelatorios();
+      atualizarPainel();
+    }
+
+    // ==========================================
+    // INICIALIZAÇÃO DO ISRAEL GÁS
+    // ==========================================
+
+    carregarDados();
+
+    document.getElementById("dataGasto").value =
+      dataLocal();
+
+    document.getElementById("dataMovimentacao").value =
+      dataLocal();
+
+    atualizarSistema();
+    atualizarGastos();
+    atualizarCalendario();
+
+  </script>
+</body>
+</html>
